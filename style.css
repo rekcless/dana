@@ -1,0 +1,118 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #0a0f12, #12171d);
+  color: #e6edf3;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 850px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #161b22;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,255,128,0.15);
+}
+
+h1 {
+  color: #00ff88;
+  text-align: center;
+}
+
+h2 {
+  color: #00ffa6;
+  margin-top: 20px;
+}
+
+.btn, .btn-green {
+  background: #238636;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 22px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn:hover, .btn-green:hover {
+  background: #2ea043;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Form Cards */
+#form-wrapper {
+  background: #0d1117;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0,255,128,0.1);
+}
+
+.form-card {
+  background: #161b22;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #2d333b;
+}
+
+.form-card label {
+  display: block;
+  margin-bottom: 6px;
+  color: #9ab;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  color: #e6edf3;
+  font-size: 15px;
+}
+
+#transaction-form button {
+  width: 100%;
+  margin-top: 10px;
+  background: linear-gradient(90deg, #00ff88, #00cc66);
+  color: black;
+  font-weight: bold;
+}
+
+.summary-box {
+  background: #10151a;
+  border: 1px solid #2d333b;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 15px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #30363d;
+}
+
+th {
+  background: #21262d;
+  color: #00ff88;
+}
+
+footer {
+  text-align: center;
+  margin-top: 25px;
+  color: #7d8590;
+}
