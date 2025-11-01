@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dompet Bulanan</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>💸 Dompet Bulanan</h1>
+
+    <!-- LOGIN -->
+    <div id="user-section">
+      <button id="loginBtn" class="btn">Login dengan Google</button>
+      <button id="logoutBtn" class="btn hidden">Logout</button>
+      <p id="userName"></p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div id="form-wrapper" class="hidden fade-in">
+      <h2>🧾 Tambah Transaksi</h2>
+      <form id="transaction-form">
+        <div class="form-card">
+          <label for="keterangan">Keterangan</label>
+          <input type="text" id="keterangan" placeholder="Contoh: Gaji, Belanja, Makan..." required>
+        </div>
+
+        <div class="form-card">
+          <label for="jumlah">Jumlah Uang (Rp)</label>
+          <input type="number" id="jumlah" placeholder="Masukkan nominal..." required>
+        </div>
+
+        <div class="form-card">
+          <label for="tipe">Jenis Transaksi</label>
+          <select id="tipe">
+            <option value="pemasukan">Pemasukan</option>
+            <option value="pengeluaran">Pengeluaran</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-green">+ Tambah Transaksi</button>
+      </form>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div id="summary" class="hidden fade-in">
+      <h2>📊 Ringkasan Bulan Ini</h2>
+      <div class="summary-box">
+        <p>💰 Pemasukan: <span id="totalIn">Rp 0</span></p>
+        <p>💸 Pengeluaran: <span id="totalOut">Rp 0</span></p>
+        <p><b>Saldo: <span id="saldo">Rp 0</span></b></p>
+      </div>
+    </div>
+
+    <!-- TABEL -->
+    <table id="transactions" class="hidden fade-in">
+      <thead>
+        <tr>
+          <th>Keterangan</th>
+          <th>Jumlah</th>
+          <th>Tipe</th>
+          <th>Tanggal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <p>💡 Dibuat oleh Wakied | Dompet Bulanan 2025</p>
+  </footer>
+</body>
+</html>
