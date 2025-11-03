@@ -12,19 +12,17 @@
     <h1>Catatan Keuangan</h1>
 
     <!-- SALDO -->
-    <div class="saldo-box">
-      <h2 id="totalSaldo">Saldo Saat Ini: Rp0</h2>
-    </div>
+    <div id="totalSaldo" class="saldo-box saldo-positif">Saldo Saat Ini: Rp0</div>
 
-    <!-- FORM (hanya tanggal, jenis, nominal) -->
+    <!-- FORM -->
     <form id="formPengeluaran" class="form-row">
       <input type="date" id="tanggal" required />
       <select id="jenis" required>
         <option value="pemasukan">Pemasukan</option>
         <option value="pengeluaran">Pengeluaran</option>
       </select>
-      <input type="text" id="kategori" placeholder="Kategori" required>
       <input type="text" id="nominal" placeholder="Nominal (Rp)" required />
+      <input type="text" id="keterangan" placeholder="Keterangan (untuk apa)" />
       <button type="submit" class="btn-primary">Tambah</button>
     </form>
 
@@ -54,17 +52,13 @@
           <th>Tanggal</th>
           <th>Jenis</th>
           <th>Nominal (Rp)</th>
+          <th>Keterangan</th>
           <th>Aksi</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-
-    <div class="rekap-box">
-      <p class="masuk-text" id="totalHarianMasuk">Total Pemasukan Harian: Rp0</p>
-      <p class="keluar-text" id="totalHarianKeluar">Total Pengeluaran Harian: Rp0</p>
-      <p id="totalHarianSaldo">Saldo Harian: Rp0</p>
-    </div>
+    <div class="rekap-box" id="rekapHarian"></div>
 
     <!-- REKAP BULANAN -->
     <h2>Rekap Bulanan</h2>
@@ -72,20 +66,15 @@
       <thead>
         <tr>
           <th>Tanggal</th>
-          <th>Keterangan</th>
           <th>Jenis</th>
           <th>Nominal (Rp)</th>
+          <th>Keterangan</th>
           <th>Aksi</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-
-    <div class="rekap-box">
-      <p class="masuk-text" id="totalBulananMasuk">Total Pemasukan Bulanan: Rp0</p>
-      <p class="keluar-text" id="totalBulananKeluar">Total Pengeluaran Bulanan: Rp0</p>
-      <p id="totalBulananSaldo">Saldo Bulanan: Rp0</p>
-    </div>
+    <div class="rekap-box" id="rekapBulanan"></div>
 
     <!-- CHART -->
     <h2>Grafik Bulanan</h2>
