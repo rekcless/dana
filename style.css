@@ -1,118 +1,40 @@
 body {
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #0a0f12, #12171d);
-  color: #e6edf3;
-  margin: 0;
-  padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff8f0;
+    color: #2c3e50;
+    margin: 0; padding: 0;
 }
 
 .container {
-  max-width: 850px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #161b22;
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(0,255,128,0.15);
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f5f3eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-h1 {
-  color: #00ff88;
-  text-align: center;
+h1, h2 { color: #3b7d3b; text-align: center; }
+
+form {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px;
 }
 
-h2 {
-  color: #00ffa6;
-  margin-top: 20px;
+form input, form textarea, form select {
+    padding: 10px; border-radius: 8px; border: 1px solid #ccc; flex: 1 1 200px;
 }
 
-.btn, .btn-green {
-  background: #238636;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 22px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.2s;
+form button {
+    padding: 10px 20px; background-color: #3b7d3b; color: #fff; border: none; border-radius: 8px;
+    cursor: pointer; transition: background-color 0.3s;
 }
+form button:hover { background-color: #2e5f2e; }
 
-.btn:hover, .btn-green:hover {
-  background: #2ea043;
-}
+.filter { display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px; align-items:center; }
 
-.hidden {
-  display: none;
-}
+table { width:100%; border-collapse:collapse; margin-bottom:10px; }
+table, th, td { border:1px solid #ccc; }
+th { background-color:#cde2cd; padding:10px; }
+td { padding:8px; text-align:center; }
 
-/* Form Cards */
-#form-wrapper {
-  background: #0d1117;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(0,255,128,0.1);
-}
-
-.form-card {
-  background: #161b22;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #2d333b;
-}
-
-.form-card label {
-  display: block;
-  margin-bottom: 6px;
-  color: #9ab;
-}
-
-input, select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #30363d;
-  background: #0d1117;
-  color: #e6edf3;
-  font-size: 15px;
-}
-
-#transaction-form button {
-  width: 100%;
-  margin-top: 10px;
-  background: linear-gradient(90deg, #00ff88, #00cc66);
-  color: black;
-  font-weight: bold;
-}
-
-.summary-box {
-  background: #10151a;
-  border: 1px solid #2d333b;
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px 0;
-}
-
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  font-size: 15px;
-}
-
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #30363d;
-}
-
-th {
-  background: #21262d;
-  color: #00ff88;
-}
-
-footer {
-  text-align: center;
-  margin-top: 25px;
-  color: #7d8590;
-}
+p { font-weight:bold; text-align:right; }
