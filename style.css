@@ -1,0 +1,126 @@
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --accent:#3498db;
+  --success:#27ae60;
+  --danger:#e74c3c;
+  --muted:#6b7280;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg);
+  color:#222;
+}
+
+.container{
+  max-width:980px;
+  margin:28px auto;
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 6px 20px rgba(10,10,20,0.06);
+}
+
+h1{ text-align:center; margin:6px 0 14px; }
+h2{ margin-top:22px; text-align:left; color:#263238; }
+
+/* saldo */
+.saldo-box{
+  background:var(--success);
+  color:white;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+  margin-bottom:14px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.08);
+}
+
+/* form */
+.form-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-bottom:14px;
+}
+.form-row input[type="date"],
+.form-row select,
+.form-row input[type="text"]{
+  padding:9px 10px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  background:white;
+  flex:1 1 180px;
+}
+.btn-primary{
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:9px 14px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.btn-secondary{
+  background:#f3f4f6;
+  color:#111827;
+  border:1px solid #e6e7ea;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* controls */
+.controls{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:6px;
+  flex-wrap:wrap;
+}
+.filter{ display:flex; align-items:center; gap:8px; }
+
+/* tables */
+table{ width:100%; border-collapse:collapse; margin-bottom:10px; }
+thead th{
+  background:var(--accent);
+  color:white;
+  padding:8px;
+  text-align:center;
+  border-radius:6px 6px 0 0;
+}
+tbody td{ text-align:center; padding:8px; border-bottom:1px solid #eef2f6; }
+.masuk-text{ color:var(--success); font-weight:600; }
+.keluar-text{ color:var(--danger); font-weight:600; }
+
+/* jenis color */
+.jenis-pemasukan{ color:var(--success); font-weight:600; }
+.jenis-pengeluaran{ color:var(--danger); font-weight:600; }
+
+/* aksi delete */
+button.delete-btn{
+  background:var(--danger);
+  color:white;
+  border:none;
+  padding:6px 8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* rekap box */
+.rekap-box{
+  background:#f8fafc;
+  border-left:4px solid var(--accent);
+  padding:10px 14px;
+  border-radius:8px;
+  margin-bottom:18px;
+}
+
+/* responsive */
+@media (max-width:640px){
+  .form-row{ gap:8px; }
+  .controls{ flex-direction:column; align-items:flex-start; }
+}
