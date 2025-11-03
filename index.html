@@ -3,80 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aplikasi Catatan Keuangan</title>
+<title>Catatan Keuangan</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h1>💰 Catatan Pemasukan & Pengeluaran</h1>
+    <h1>Catatan Keuangan</h1>
 
-    <!-- Form Input -->
+    <!-- 💰 Total Saldo -->
+    <div class="saldo-box">
+        <h2 id="totalSaldo">Saldo Saat Ini: Rp0</h2>
+    </div>
+
+    <!-- Form Input Pengeluaran/Pemasukan -->
     <form id="formPengeluaran">
         <input type="date" id="tanggal" required>
-
-        <!-- Jenis Transaksi -->
         <select id="jenis" required>
-            <option value="pengeluaran">Pengeluaran</option>
             <option value="pemasukan">Pemasukan</option>
+            <option value="pengeluaran">Pengeluaran</option>
         </select>
-
-        <input type="text" id="kategori" placeholder="Kategori (misal: Makan, Gaji...)" required>
-        <input type="text" id="nominal" placeholder="Nominal (Rp)" required>
+        <input type="text" id="kategori" placeholder="Kategori" required>
+        <input type="number" id="nominal" placeholder="Nominal (Rp)" required>
         <textarea id="keterangan" placeholder="Keterangan (opsional)"></textarea>
-        <button type="submit">+ Tambah Transaksi</button>
+        <button type="submit">Tambah Data</button>
     </form>
 
-    <!-- Filter -->
+    <!-- Filter Kategori -->
     <div class="filter">
         <label for="filterKategori">Filter Kategori:</label>
-        <select id="filterKategori">
-            <option value="all">Semua</option>
-        </select>
+        <select id="filterKategori"><option value="all">Semua</option></select>
     </div>
 
     <!-- Rekap Harian -->
-    <h2>📅 Rekap Harian</h2>
+    <h2>Rekap Harian</h2>
     <table id="tabelHarian">
         <thead>
-            <tr>
-                <th>Tanggal</th>
-                <th>Jenis</th>
-                <th>Kategori</th>
-                <th>Nominal (Rp)</th>
-                <th>Keterangan</th>
-                <th>Aksi</th>
-            </tr>
+            <tr><th>Tanggal</th><th>Jenis</th><th>Kategori</th><th>Nominal (Rp)</th><th>Keterangan</th><th>Aksi</th></tr>
         </thead>
         <tbody></tbody>
     </table>
-    <div id="totalHarian" class="total-box">
-        <p><b>Total Pemasukan:</b> Rp0</p>
-        <p><b>Total Pengeluaran:</b> Rp0</p>
-        <p><b>Saldo Hari Ini:</b> Rp0</p>
-    </div>
+    <p id="totalHarian">Total Harian: Rp0</p>
 
     <!-- Rekap Bulanan -->
-    <h2>📊 Rekap Bulanan</h2>
+    <h2>Rekap Bulanan</h2>
     <input type="month" id="bulanTahun">
     <button id="lihatBulanan">Lihat Bulanan</button>
     <table id="tabelBulanan">
         <thead>
-            <tr>
-                <th>Tanggal</th>
-                <th>Jenis</th>
-                <th>Kategori</th>
-                <th>Nominal (Rp)</th>
-                <th>Keterangan</th>
-                <th>Aksi</th>
-            </tr>
+            <tr><th>Tanggal</th><th>Jenis</th><th>Kategori</th><th>Nominal (Rp)</th><th>Keterangan</th></tr>
         </thead>
         <tbody></tbody>
     </table>
-    <div id="totalBulanan" class="total-box">
-        <p><b>Total Pemasukan:</b> Rp0</p>
-        <p><b>Total Pengeluaran:</b> Rp0</p>
-        <p><b>Saldo Bulan Ini:</b> Rp0</p>
-    </div>
+    <p id="totalBulanan">Total Bulanan: Rp0</p>
 </div>
 
 <script type="module" src="app.js"></script>
