@@ -3,23 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catatan Pengeluaran</title>
+<title>Catatan Keuangan Harian & Bulanan</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h1>Catatan Pengeluaran</h1>
+    <h1>Catatan Keuangan</h1>
 
-    <!-- Form Input Pengeluaran -->
+    <!-- Form Input -->
     <form id="formPengeluaran">
         <input type="date" id="tanggal" required>
+        <select id="jenis" required>
+            <option value="pengeluaran">Pengeluaran</option>
+            <option value="pemasukan">Pemasukan</option>
+        </select>
         <input type="text" id="kategori" placeholder="Kategori" required>
         <input type="text" id="nominal" placeholder="Nominal (Rp)" required>
         <textarea id="keterangan" placeholder="Keterangan (opsional)"></textarea>
-        <button type="submit">Tambah Pengeluaran</button>
+        <button type="submit">Simpan</button>
     </form>
 
-    <!-- Filter Kategori -->
+    <!-- Filter -->
     <div class="filter">
         <label for="filterKategori">Filter Kategori:</label>
         <select id="filterKategori"><option value="all">Semua</option></select>
@@ -29,11 +33,20 @@
     <h2>Rekap Harian</h2>
     <table id="tabelHarian">
         <thead>
-            <tr><th>Tanggal</th><th>Kategori</th><th>Nominal (Rp)</th><th>Keterangan</th><th>Aksi</th></tr>
+            <tr>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Kategori</th>
+                <th>Nominal (Rp)</th>
+                <th>Keterangan</th>
+                <th>Aksi</th>
+            </tr>
         </thead>
         <tbody></tbody>
     </table>
-    <p id="totalHarian">Total Harian: Rp0</p>
+    <p id="totalHarianPemasukan">Total Pemasukan: Rp0</p>
+    <p id="totalHarianPengeluaran">Total Pengeluaran: Rp0</p>
+    <p id="saldoHarian">Saldo Hari Ini: Rp0</p>
 
     <!-- Rekap Bulanan -->
     <h2>Rekap Bulanan</h2>
@@ -41,11 +54,20 @@
     <button id="lihatBulanan">Lihat Bulanan</button>
     <table id="tabelBulanan">
         <thead>
-            <tr><th>Tanggal</th><th>Kategori</th><th>Nominal (Rp)</th><th>Keterangan</th><th>Aksi</th></tr>
+            <tr>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Kategori</th>
+                <th>Nominal (Rp)</th>
+                <th>Keterangan</th>
+                <th>Aksi</th>
+            </tr>
         </thead>
         <tbody></tbody>
     </table>
-    <p id="totalBulanan">Total Bulanan: Rp0</p>
+    <p id="totalBulananPemasukan">Total Pemasukan: Rp0</p>
+    <p id="totalBulananPengeluaran">Total Pengeluaran: Rp0</p>
+    <p id="saldoBulanan">Saldo Bulan Ini: Rp0</p>
 </div>
 
 <script type="module" src="app.js"></script>
