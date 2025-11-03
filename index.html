@@ -1,75 +1,53 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dompet Bulanan</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pengeluaran Harian & Bulanan</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>💸 Dompet Bulanan</h1>
+<div class="container">
+    <h1>Catatan Pengeluaran</h1>
 
-    <!-- LOGIN -->
-    <div id="user-section">
-      <button id="loginBtn" class="btn">Login dengan Google</button>
-      <button id="logoutBtn" class="btn hidden">Logout</button>
-      <p id="userName"></p>
+    <!-- Form Input Pengeluaran -->
+    <form id="formPengeluaran">
+        <input type="date" id="tanggal" required>
+        <input type="text" id="kategori" placeholder="Kategori" required>
+        <input type="number" id="nominal" placeholder="Nominal (Rp)" required>
+        <textarea id="keterangan" placeholder="Keterangan (opsional)"></textarea>
+        <button type="submit">Tambah Pengeluaran</button>
+    </form>
+
+    <!-- Filter Kategori -->
+    <div class="filter">
+        <label for="filterKategori">Filter Kategori:</label>
+        <select id="filterKategori"><option value="all">Semua</option></select>
     </div>
 
-    <!-- FORM CARD -->
-    <div id="form-wrapper" class="fade-in">
-      <h2>🧾 Tambah Transaksi</h2>
-      <form id="transaction-form">
-        <div class="form-card">
-          <label for="keterangan">Keterangan</label>
-          <input type="text" id="keterangan" placeholder="Contoh: Gaji, Belanja, Makan..." required>
-        </div>
-
-        <div class="form-card">
-          <label for="jumlah">Jumlah Uang (Rp)</label>
-          <input type="number" id="jumlah" placeholder="Masukkan nominal..." required>
-        </div>
-
-        <div class="form-card">
-          <label for="tipe">Jenis Transaksi</label>
-          <select id="tipe">
-            <option value="pemasukan">Pemasukan</option>
-            <option value="pengeluaran">Pengeluaran</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn-green">+ Tambah Transaksi</button>
-      </form>
-    </div>
-
-    <!-- RINGKASAN -->
-    <div id="summary" class="fade-in">
-      <h2>📊 Ringkasan Bulan Ini</h2>
-      <div class="summary-box">
-        <p>💰 Pemasukan: <span id="totalIn">Rp 0</span></p>
-        <p>💸 Pengeluaran: <span id="totalOut">Rp 0</span></p>
-        <p><b>Saldo: <span id="saldo">Rp 0</span></b></p>
-      </div>
-    </div>
-
-    <!-- TABEL -->
-    <table id="transactions" class="fade-in">
-      <thead>
-        <tr>
-          <th>Keterangan</th>
-          <th>Jumlah</th>
-          <th>Tipe</th>
-          <th>Tanggal</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
+    <!-- Rekap Harian -->
+    <h2>Rekap Harian</h2>
+    <table id="tabelHarian">
+        <thead>
+            <tr><th>Tanggal</th><th>Kategori</th><th>Nominal (Rp)</th><th>Keterangan</th></tr>
+        </thead>
+        <tbody></tbody>
     </table>
-  </div>
+    <p id="totalHarian">Total Harian: Rp0</p>
 
-  <footer>
-    <p>💡 Dibuat oleh Wakied | Dompet Bulanan 2025</p>
-  </footer>
+    <!-- Rekap Bulanan -->
+    <h2>Rekap Bulanan</h2>
+    <input type="month" id="bulanTahun">
+    <button id="lihatBulanan">Lihat Bulanan</button>
+    <table id="tabelBulanan">
+        <thead>
+            <tr><th>Tanggal</th><th>Kategori</th><th>Nominal (Rp)</th><th>Keterangan</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <p id="totalBulanan">Total Bulanan: Rp0</p>
+</div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
