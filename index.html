@@ -42,19 +42,29 @@
         </thead>
         <tbody></tbody>
     </table>
-    <p id="totalHarian">Total Harian: Rp0</p>
+    <div class="rekap-box">
+        <p id="totalHarianMasuk">Total Pemasukan Harian: Rp0</p>
+        <p id="totalHarianKeluar">Total Pengeluaran Harian: Rp0</p>
+        <p id="totalHarianSaldo">Saldo Harian: Rp0</p>
+    </div>
 
     <!-- Rekap Bulanan -->
     <h2>Rekap Bulanan</h2>
-    <input type="month" id="bulanTahun">
-    <button id="lihatBulanan">Lihat Bulanan</button>
+    <div class="bulan-filter">
+        <input type="month" id="bulanTahun">
+        <button id="lihatBulanan">Lihat Bulanan</button>
+    </div>
     <table id="tabelBulanan">
         <thead>
             <tr><th>Tanggal</th><th>Jenis</th><th>Kategori</th><th>Nominal</th><th>Keterangan</th><th>Aksi</th></tr>
         </thead>
         <tbody></tbody>
     </table>
-    <p id="totalBulanan">Total Bulanan: Rp0</p>
+    <div class="rekap-box">
+        <p id="totalBulananMasuk">Total Pemasukan Bulanan: Rp0</p>
+        <p id="totalBulananKeluar">Total Pengeluaran Bulanan: Rp0</p>
+        <p id="totalBulananSaldo">Saldo Bulanan: Rp0</p>
+    </div>
 </div>
 
 <script type="module" src="app.js"></script>
