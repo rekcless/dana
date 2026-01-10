@@ -4,7 +4,9 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
 const form = document.getElementById("formPengeluaran");
@@ -20,21 +22,27 @@ let chart = null;
 
 const rupiah = n => "Rp" + n.toLocaleString("id-ID");
 
+/* Format input nominal */
 document.getElementById("nominal").addEventListener("input", e => {
-  e.target.value = e.target.value.replace(/\D/g, "")
-    ? Number(e.target.value.replace(/\D/g, "")).toLocaleString("id-ID")
-    : "";
+  const val = e.target.value.replace(/\D/g, "");
+  e.target.value = val ? Number(val).toLocaleString("id-ID") : "";
 });
 
+/* Submit data */
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
   const tanggal = document.getElementById("tanggal").value;
   const jenis = document.getElementById("jenis").value;
-  const nominal = Number(document.getElementById("nominal").value.replace(/\D/g, ""));
+  const nominal = Number(
+    document.getElementById("nominal").value.replace(/\D/g, "")
+  );
   const ket = document.getElementById("keterangan").value || "-";
 
-  if (!tanggal || !nominal) return alert("Lengkapi data!");
+  if (!tanggal || !nominal) {
+    alert("Lengkapi data!");
+    return;
+  }
 
   await addDoc(collection(db, "pengeluaran"), {
     tanggal,
@@ -47,26 +55,54 @@ form.addEventListener("submit", async e => {
   loadData();
 });
 
+/* Load data (URUT DARI TERBARU) */
 async function loadData() {
-  const snap = await getDocs(collection(db, "pengeluaran"));
+  const q = query(
+    collection(db, "pengeluaran"),
+    orderBy("tanggal", "desc")
+  );
+
+  const snap = await getDocs(q);
   dataAll = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   render();
 }
 
 loadData();
 
-/* Render semua tampilan */
+/* Render tampilan */
 function render() {
-  const bulanFilter = bulanInput.value || new Date().toISOString().slice(0, 7);
+  /* ===== SALDO GLOBAL (SEMUA DATA) ===== */
+  let totalMasukGlobal = 0;
+  let totalKeluarGlobal = 0;
 
-  const dataBulan = dataAll.filter(d => d.tanggal.startsWith(bulanFilter));
+  dataAll.forEach(d => {
+    if (d.jenis === "pemasukan") totalMasukGlobal += d.nominal;
+    else totalKeluarGlobal += d.nominal;
+  });
 
+  const saldoGlobal = totalMasukGlobal - totalKeluarGlobal;
+
+  saldoEl.textContent = `Saldo Saat Ini: ${rupiah(saldoGlobal)}`;
+  saldoEl.className = `saldo-box ${
+    saldoGlobal >= 0 ? "saldo-positif" : "saldo-negatif"
+  }`;
+
+  /* ===== FILTER BULAN ===== */
+  const bulanFilter =
+    bulanInput.value || new Date().toISOString().slice(0, 7);
+
+  const dataBulan = dataAll.filter(d =>
+    d.tanggal.startsWith(bulanFilter)
+  );
+
+  /* ===== TABEL RIWAYAT ===== */
   tabel.innerHTML = "";
-  let totalMasuk = 0, totalKeluar = 0;
+  let totalMasukBulan = 0;
+  let totalKeluarBulan = 0;
 
   dataBulan.forEach(d => {
-    if (d.jenis === "pemasukan") totalMasuk += d.nominal;
-    else totalKeluar += d.nominal;
+    if (d.jenis === "pemasukan") totalMasukBulan += d.nominal;
+    else totalKeluarBulan += d.nominal;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -85,25 +121,32 @@ function render() {
       await deleteDoc(doc(db, "pengeluaran", d.id));
       loadData();
     };
+
     tabel.appendChild(tr);
   });
 
-  // Rekap bulanan
-  const saldo = totalMasuk - totalKeluar;
+  /* ===== REKAP BULANAN ===== */
+  const saldoBulan = totalMasukBulan - totalKeluarBulan;
+
   rekapBulananEl.innerHTML = `
     <h3>Rekap Bulan ${bulanFilter}</h3>
-    <p class="text-pemasukan">Total Pemasukan: ${rupiah(totalMasuk)}</p>
-    <p class="text-pengeluaran">Total Pengeluaran: ${rupiah(totalKeluar)}</p>
-    <p class="${saldo >= 0 ? 'text-pemasukan' : 'text-pengeluaran'}">Saldo: ${rupiah(saldo)}</p>
+    <p class="text-pemasukan">Total Pemasukan: ${rupiah(totalMasukBulan)}</p>
+    <p class="text-pengeluaran">Total Pengeluaran: ${rupiah(totalKeluarBulan)}</p>
+    <p class="${saldoBulan >= 0 ? "text-pemasukan" : "text-pengeluaran"}">
+      Saldo: ${rupiah(saldoBulan)}
+    </p>
   `;
 
-  // Rekap harian
-  const hariIni = new Date().toISOString().slice(0, 10);
+  /* ===== REKAP HARIAN ===== */
+  const hariIni = new Date().toLocaleDateString("en-CA");
   const dataHari = dataBulan.filter(d => d.tanggal === hariIni);
 
-  let masukHarian = 0, keluarHarian = 0;
+  let masukHarian = 0;
+  let keluarHarian = 0;
+
   dataHari.forEach(d => {
-    d.jenis === "pemasukan" ? masukHarian += d.nominal : keluarHarian += d.nominal;
+    if (d.jenis === "pemasukan") masukHarian += d.nominal;
+    else keluarHarian += d.nominal;
   });
 
   rekapHarianEl.innerHTML = `
@@ -112,16 +155,13 @@ function render() {
     <p class="text-pengeluaran">Pengeluaran: ${rupiah(keluarHarian)}</p>
   `;
 
-  saldoEl.textContent = `Saldo Saat Ini: ${rupiah(saldo)}`;
-  saldoEl.className = `saldo-box ${saldo >= 0 ? "saldo-positif" : "saldo-negatif"}`;
-
-  renderChart(totalMasuk, totalKeluar);
+  renderChart(totalMasukBulan, totalKeluarBulan);
 }
 
 /* Tombol filter bulan */
 lihatBulananBtn.addEventListener("click", render);
 
-/* Grafik bulanan */
+/* Grafik */
 function renderChart(masuk, keluar) {
   const ctx = document.getElementById("chartBulanan").getContext("2d");
   if (chart) chart.destroy();
@@ -130,20 +170,18 @@ function renderChart(masuk, keluar) {
     type: "bar",
     data: {
       labels: ["Pemasukan", "Pengeluaran"],
-      datasets: [{
-        data: [masuk, keluar],
-        backgroundColor: ["#27ae60", "#e74c3c"]
-      }]
+      datasets: [
+        {
+          data: [masuk, keluar],
+          backgroundColor: ["#27ae60", "#e74c3c"]
+        }
+      ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
     }
   });
 }
