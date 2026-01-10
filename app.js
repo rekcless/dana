@@ -4,136 +4,131 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
-  doc,
-  orderBy,
-  query
+  doc
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
-// ================= ELEMENT =================
 const form = document.getElementById("formPengeluaran");
-const totalSaldoEl = document.getElementById("totalSaldo");
-
-const tabelHarian = document.querySelector("#tabelHarian tbody");
-const tabelBulanan = document.querySelector("#tabelBulanan tbody");
-
-const rekapHarian = document.getElementById("rekapHarian");
-const rekapBulanan = document.getElementById("rekapBulanan");
-
+const tabel = document.getElementById("tabelData");
+const saldoEl = document.getElementById("totalSaldo");
+const rekapEl = document.getElementById("rekap");
 const filterJenis = document.getElementById("filterJenis");
-const bulanTahun = document.getElementById("bulanTahun");
+const bulanInput = document.getElementById("bulanTahun");
 const lihatBulananBtn = document.getElementById("lihatBulanan");
 
-// ================= UTIL =================
-const rupiah = n => n.toLocaleString("id-ID");
+let dataAll = [];
+let chart = null;
 
-// ================= ADD DATA =================
-form.addEventListener("submit", async (e) => {
+/* FORMAT */
+const rupiah = n => "Rp" + n.toLocaleString("id-ID");
+
+/* INPUT NOMINAL */
+document.getElementById("nominal").addEventListener("input", e => {
+  e.target.value = e.target.value.replace(/\D/g, "")
+    ? Number(e.target.value.replace(/\D/g, "")).toLocaleString("id-ID")
+    : "";
+});
+
+/* ADD DATA */
+form.addEventListener("submit", async e => {
   e.preventDefault();
 
-  const data = {
-    tanggal: document.getElementById("tanggal").value,
-    jenis: document.getElementById("jenis").value,
-    nominal: Number(document.getElementById("nominal").value.replace(/\D/g, "")),
-    keterangan: document.getElementById("keterangan").value || "",
-    createdAt: Date.now()
-  };
+  const tanggal = document.getElementById("tanggal").value;
+  const jenis = document.getElementById("jenis").value;
+  const nominal = Number(document.getElementById("nominal").value.replace(/\D/g, ""));
+  const ket = document.getElementById("keterangan").value || "-";
 
-  if (!data.tanggal || !data.nominal) return alert("Data belum lengkap");
+  if (!tanggal || !nominal) return alert("Lengkapi data!");
 
-  await addDoc(collection(db, "transaksi"), data);
+  await addDoc(collection(db, "pengeluaran"), {
+    tanggal,
+    jenis,
+    nominal,
+    ket
+  });
+
   form.reset();
   loadData();
 });
 
-// ================= LOAD DATA =================
+/* LOAD DATA */
 async function loadData() {
-  tabelHarian.innerHTML = "";
-  tabelBulanan.innerHTML = "";
-
-  let totalMasuk = 0;
-  let totalKeluar = 0;
-
-  const q = query(collection(db, "transaksi"), orderBy("tanggal", "desc"));
-  const snap = await getDocs(q);
-
-  snap.forEach(docSnap => {
-    const d = docSnap.data();
-    const warna = d.jenis === "pemasukan" ? "text-pemasukan" : "text-pengeluaran";
-
-    if (d.jenis === "pemasukan") totalMasuk += d.nominal;
-    else totalKeluar += d.nominal;
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="${warna}">${d.tanggal}</td>
-      <td class="${warna}">${d.jenis}</td>
-      <td class="${warna}">Rp${rupiah(d.nominal)}</td>
-      <td class="${warna}">${d.keterangan || "-"}</td>
-      <td>
-        <button class="delete-btn" data-id="${docSnap.id}">Hapus</button>
-      </td>
-    `;
-    tabelHarian.appendChild(tr);
-  });
-
-  const saldo = totalMasuk - totalKeluar;
-  totalSaldoEl.textContent = `Saldo Saat Ini: Rp${rupiah(saldo)}`;
-  totalSaldoEl.className = saldo >= 0
-    ? "saldo-box saldo-positif"
-    : "saldo-box saldo-negatif";
-
-  rekapHarian.innerHTML = `
-    <p class="text-pemasukan">Total Pemasukan: Rp${rupiah(totalMasuk)}</p>
-    <p class="text-pengeluaran">Total Pengeluaran: Rp${rupiah(totalKeluar)}</p>
-  `;
-
-  aktifkanDelete();
+  const snap = await getDocs(collection(db, "pengeluaran"));
+  dataAll = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  render();
 }
+loadData();
 
-// ================= DELETE =================
-function aktifkanDelete() {
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.onclick = async () => {
-      if (!confirm("Hapus data ini?")) return;
-      await deleteDoc(doc(db, "transaksi", btn.dataset.id));
-      loadData();
-    };
-  });
-}
-
-// ================= FILTER BULANAN =================
-lihatBulananBtn.addEventListener("click", async () => {
-  const bulan = bulanTahun.value;
-  if (!bulan) return alert("Pilih bulan");
-
-  tabelBulanan.innerHTML = "";
-
+/* RENDER */
+function render() {
+  tabel.innerHTML = "";
   let masuk = 0, keluar = 0;
-  const snap = await getDocs(collection(db, "transaksi"));
 
-  snap.forEach(docSnap => {
-    const d = docSnap.data();
-    if (!d.tanggal.startsWith(bulan)) return;
+  const filter = filterJenis.value;
 
-    const warna = d.jenis === "pemasukan" ? "text-pemasukan" : "text-pengeluaran";
+  dataAll.forEach(d => {
+    if (filter !== "all" && d.jenis !== filter) return;
+
     d.jenis === "pemasukan" ? masuk += d.nominal : keluar += d.nominal;
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="${warna}">${d.tanggal}</td>
-      <td class="${warna}">${d.jenis}</td>
-      <td class="${warna}">Rp${rupiah(d.nominal)}</td>
-      <td class="${warna}">${d.keterangan || "-"}</td>
-      <td>-</td>
+      <td>${d.tanggal}</td>
+      <td class="${d.jenis === "pemasukan" ? "text-pemasukan" : "text-pengeluaran"}">
+        ${d.jenis}
+      </td>
+      <td class="${d.jenis === "pemasukan" ? "text-pemasukan" : "text-pengeluaran"}">
+        ${rupiah(d.nominal)}
+      </td>
+      <td>${d.ket}</td>
+      <td><button class="delete-btn">Hapus</button></td>
     `;
-    tabelBulanan.appendChild(tr);
+
+    tr.querySelector("button").onclick = async () => {
+      await deleteDoc(doc(db, "pengeluaran", d.id));
+      loadData();
+    };
+
+    tabel.appendChild(tr);
   });
 
-  rekapBulanan.innerHTML = `
-    <p class="text-pemasukan">Total Pemasukan: Rp${rupiah(masuk)}</p>
-    <p class="text-pengeluaran">Total Pengeluaran: Rp${rupiah(keluar)}</p>
-  `;
-});
+  const saldo = masuk - keluar;
+  saldoEl.textContent = `Saldo Saat Ini: ${rupiah(saldo)}`;
+  saldoEl.className = `saldo-box ${saldo >= 0 ? "saldo-positif" : "saldo-negatif"}`;
 
-// ================= INIT =================
-loadData();
+  rekapEl.innerHTML = `
+    <p class="text-pemasukan">Total Pemasukan: ${rupiah(masuk)}</p>
+    <p class="text-pengeluaran">Total Pengeluaran: ${rupiah(keluar)}</p>
+  `;
+
+  renderChart(masuk, keluar);
+}
+
+filterJenis.addEventListener("change", render);
+
+/* CHART */
+function renderChart(masuk, keluar) {
+  const ctx = document.getElementById("chartBulanan").getContext("2d");
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Pemasukan", "Pengeluaran"],
+      datasets: [{
+        data: [masuk, keluar],
+        backgroundColor: ["#27ae60", "#e74c3c"]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
