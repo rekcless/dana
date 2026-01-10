@@ -1,9 +1,8 @@
-// Import Firebase SDK (CDN)
+// Firebase CDN (WAJIB module)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
 
-// Firebase config (Saku)
 const firebaseConfig = {
   apiKey: "AIzaSyDSypYYx52DMrDHiUvejCVGjWElDIZmCgk",
   authDomain: "saku-952f4.firebaseapp.com",
@@ -14,11 +13,7 @@ const firebaseConfig = {
   measurementId: "G-Y3ZKR9193L"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Firestore
 export const db = getFirestore(app);
-
-// Analytics (optional)
-export const analytics = getAnalytics(app);
+getAnalytics(app); // optional
