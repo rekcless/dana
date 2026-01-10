@@ -4,206 +4,136 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  orderBy,
+  query
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
-/* ===== ELEMENT ===== */
+// ================= ELEMENT =================
 const form = document.getElementById("formPengeluaran");
-const tanggalInput = document.getElementById("tanggal");
-const jenisInput = document.getElementById("jenis");
-const nominalInput = document.getElementById("nominal");
-const keteranganInput = document.getElementById("keterangan");
+const totalSaldoEl = document.getElementById("totalSaldo");
 
 const tabelHarian = document.querySelector("#tabelHarian tbody");
 const tabelBulanan = document.querySelector("#tabelBulanan tbody");
 
-const totalSaldoEl = document.getElementById("totalSaldo");
-const rekapHarianEl = document.getElementById("rekapHarian");
-const rekapBulananEl = document.getElementById("rekapBulanan");
+const rekapHarian = document.getElementById("rekapHarian");
+const rekapBulanan = document.getElementById("rekapBulanan");
 
-const bulanTahunInput = document.getElementById("bulanTahun");
-const lihatBulananBtn = document.getElementById("lihatBulanan");
 const filterJenis = document.getElementById("filterJenis");
-const exportCSVBtn = document.getElementById("exportCSV");
+const bulanTahun = document.getElementById("bulanTahun");
+const lihatBulananBtn = document.getElementById("lihatBulanan");
 
-let allData = [];
-let chartInstance = null;
+// ================= UTIL =================
+const rupiah = n => n.toLocaleString("id-ID");
 
-/* ===== HELPER ===== */
-const formatRp = n => "Rp" + Number(n).toLocaleString("id-ID");
-const toNumber = v => Number(String(v).replace(/[^\d]/g, "")) || 0;
-
-const todayStr = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-};
-
-/* ===== FORMAT NOMINAL ===== */
-nominalInput.addEventListener("input", e => {
-  const raw = e.target.value.replace(/[^\d]/g, "");
-  e.target.value = raw ? Number(raw).toLocaleString("id-ID") : "";
-});
-
-/* ===== TAMBAH DATA ===== */
-form.addEventListener("submit", async e => {
+// ================= ADD DATA =================
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const tanggal = tanggalInput.value;
-  const jenis = jenisInput.value;
-  const nominal = toNumber(nominalInput.value);
-  const keterangan = keteranganInput.value || "-";
+  const data = {
+    tanggal: document.getElementById("tanggal").value,
+    jenis: document.getElementById("jenis").value,
+    nominal: Number(document.getElementById("nominal").value.replace(/\D/g, "")),
+    keterangan: document.getElementById("keterangan").value || "",
+    createdAt: Date.now()
+  };
 
-  if (!tanggal || !nominal) {
-    alert("Tanggal & nominal wajib diisi");
-    return;
-  }
+  if (!data.tanggal || !data.nominal) return alert("Data belum lengkap");
 
-  const [tahun, bulan] = tanggal.split("-");
-
-  await addDoc(collection(db, "pengeluaran"), {
-    tanggal,               // STRING YYYY-MM-DD
-    jenis,
-    nominal,
-    keterangan,
-    tahun: Number(tahun),
-    bulan: Number(bulan)
-  });
-
+  await addDoc(collection(db, "transaksi"), data);
   form.reset();
   loadData();
 });
 
-/* ===== LOAD DATA ===== */
+// ================= LOAD DATA =================
 async function loadData() {
-  const snap = await getDocs(collection(db, "pengeluaran"));
-  allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  updateHarian();
-  updateBulanan();
-  updateSaldo();
-}
-
-/* ===== HAPUS ===== */
-async function hapusData(id) {
-  const pin = prompt("Masukkan PIN:");
-  if (pin !== "223344") return alert("PIN salah");
-  if (!confirm("Yakin hapus data?")) return;
-
-  await deleteDoc(doc(db, "pengeluaran", id));
-  loadData();
-}
-window.hapusData = hapusData;
-
-/* ===== HARIAN ===== */
-function updateHarian() {
-  const today = todayStr();
-  let masuk = 0, keluar = 0;
   tabelHarian.innerHTML = "";
-
-  allData.forEach(d => {
-    if (d.tanggal !== today) return;
-    if (filterJenis.value !== "all" && d.jenis !== filterJenis.value) return;
-
-    d.jenis === "pemasukan" ? masuk += d.nominal : keluar += d.nominal;
-
-    tabelHarian.innerHTML += `
-      <tr>
-        <td>${d.tanggal}</td>
-        <td>${d.jenis}</td>
-        <td>${formatRp(d.nominal)}</td>
-        <td>${d.keterangan}</td>
-        <td><button onclick="hapusData('${d.id}')">Hapus</button></td>
-      </tr>
-    `;
-  });
-
-  rekapHarianEl.innerHTML = `
-    <p>Pemasukan: ${formatRp(masuk)}</p>
-    <p>Pengeluaran: ${formatRp(keluar)}</p>
-    <p>Saldo: ${formatRp(masuk - keluar)}</p>
-  `;
-}
-
-/* ===== BULANAN ===== */
-function updateBulanan() {
-  if (!bulanTahunInput.value) return;
-  const [y,m] = bulanTahunInput.value.split("-");
-  let masuk = 0, keluar = 0;
   tabelBulanan.innerHTML = "";
 
-  allData.forEach(d => {
-    if (d.tahun != y || d.bulan != m) return;
-    if (filterJenis.value !== "all" && d.jenis !== filterJenis.value) return;
+  let totalMasuk = 0;
+  let totalKeluar = 0;
 
-    d.jenis === "pemasukan" ? masuk += d.nominal : keluar += d.nominal;
+  const q = query(collection(db, "transaksi"), orderBy("tanggal", "desc"));
+  const snap = await getDocs(q);
 
-    tabelBulanan.innerHTML += `
-      <tr>
-        <td>${d.tanggal}</td>
-        <td>${d.jenis}</td>
-        <td>${formatRp(d.nominal)}</td>
-        <td>${d.keterangan}</td>
-        <td><button onclick="hapusData('${d.id}')">Hapus</button></td>
-      </tr>
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    const warna = d.jenis === "pemasukan" ? "text-pemasukan" : "text-pengeluaran";
+
+    if (d.jenis === "pemasukan") totalMasuk += d.nominal;
+    else totalKeluar += d.nominal;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="${warna}">${d.tanggal}</td>
+      <td class="${warna}">${d.jenis}</td>
+      <td class="${warna}">Rp${rupiah(d.nominal)}</td>
+      <td class="${warna}">${d.keterangan || "-"}</td>
+      <td>
+        <button class="delete-btn" data-id="${docSnap.id}">Hapus</button>
+      </td>
     `;
+    tabelHarian.appendChild(tr);
   });
 
-  rekapBulananEl.innerHTML = `
-    <p>Pemasukan: ${formatRp(masuk)}</p>
-    <p>Pengeluaran: ${formatRp(keluar)}</p>
-    <p>Saldo: ${formatRp(masuk - keluar)}</p>
+  const saldo = totalMasuk - totalKeluar;
+  totalSaldoEl.textContent = `Saldo Saat Ini: Rp${rupiah(saldo)}`;
+  totalSaldoEl.className = saldo >= 0
+    ? "saldo-box saldo-positif"
+    : "saldo-box saldo-negatif";
+
+  rekapHarian.innerHTML = `
+    <p class="text-pemasukan">Total Pemasukan: Rp${rupiah(totalMasuk)}</p>
+    <p class="text-pengeluaran">Total Pengeluaran: Rp${rupiah(totalKeluar)}</p>
   `;
 
-  updateChart(masuk, keluar);
+  aktifkanDelete();
 }
 
-/* ===== SALDO TOTAL ===== */
-function updateSaldo() {
-  let saldo = 0;
-  allData.forEach(d => d.jenis === "pemasukan" ? saldo += d.nominal : saldo -= d.nominal);
-  totalSaldoEl.textContent = `Saldo Saat Ini: ${formatRp(saldo)}`;
-}
-
-/* ===== CHART ===== */
-function updateChart(masuk, keluar) {
-  const ctx = document.getElementById("chartBulanan");
-  if (chartInstance) chartInstance.destroy();
-
-  chartInstance = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Pemasukan", "Pengeluaran"],
-      datasets: [{
-        data: [masuk, keluar],
-        backgroundColor: ["#2ecc71", "#e74c3c"]
-      }]
-    },
-    options: { responsive: true }
+// ================= DELETE =================
+function aktifkanDelete() {
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.onclick = async () => {
+      if (!confirm("Hapus data ini?")) return;
+      await deleteDoc(doc(db, "transaksi", btn.dataset.id));
+      loadData();
+    };
   });
 }
 
-/* ===== EXPORT CSV ===== */
-exportCSVBtn.addEventListener("click", () => {
-  let csv = "Tanggal,Jenis,Nominal,Keterangan\n";
-  allData.forEach(d => {
-    csv += `${d.tanggal},${d.jenis},${d.nominal},"${d.keterangan}"\n`;
+// ================= FILTER BULANAN =================
+lihatBulananBtn.addEventListener("click", async () => {
+  const bulan = bulanTahun.value;
+  if (!bulan) return alert("Pilih bulan");
+
+  tabelBulanan.innerHTML = "";
+
+  let masuk = 0, keluar = 0;
+  const snap = await getDocs(collection(db, "transaksi"));
+
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    if (!d.tanggal.startsWith(bulan)) return;
+
+    const warna = d.jenis === "pemasukan" ? "text-pemasukan" : "text-pengeluaran";
+    d.jenis === "pemasukan" ? masuk += d.nominal : keluar += d.nominal;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="${warna}">${d.tanggal}</td>
+      <td class="${warna}">${d.jenis}</td>
+      <td class="${warna}">Rp${rupiah(d.nominal)}</td>
+      <td class="${warna}">${d.keterangan || "-"}</td>
+      <td>-</td>
+    `;
+    tabelBulanan.appendChild(tr);
   });
 
-  const blob = new Blob([csv], { type: "text/csv" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "catatan_keuangan.csv";
-  a.click();
+  rekapBulanan.innerHTML = `
+    <p class="text-pemasukan">Total Pemasukan: Rp${rupiah(masuk)}</p>
+    <p class="text-pengeluaran">Total Pengeluaran: Rp${rupiah(keluar)}</p>
+  `;
 });
 
-/* ===== EVENT ===== */
-filterJenis.addEventListener("change", () => {
-  updateHarian();
-  updateBulanan();
-});
-lihatBulananBtn.addEventListener("click", e => {
-  e.preventDefault();
-  updateBulanan();
-});
-
-/* ===== INIT ===== */
+// ================= INIT =================
 loadData();
