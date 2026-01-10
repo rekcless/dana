@@ -1,86 +1,71 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Catatan Keuangan - Final</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catatan Keuangan</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js v4 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Catatan Keuangan</h1>
 
-    <!-- SALDO -->
-    <div id="totalSaldo" class="saldo-box saldo-positif">Saldo Saat Ini: Rp0</div>
+<div class="container">
+  <h1>Catatan Keuangan</h1>
 
-    <!-- FORM -->
-    <form id="formPengeluaran" class="form-row">
-      <input type="date" id="tanggal" required />
-      <select id="jenis" required>
-        <option value="pemasukan">Pemasukan</option>
-        <option value="pengeluaran">Pengeluaran</option>
-      </select>
-      <input type="text" id="nominal" placeholder="Nominal (Rp)" required />
-      <input type="text" id="keterangan" placeholder="Keterangan (untuk apa)" />
-      <button type="submit" class="btn-primary">Tambah</button>
-    </form>
-
-    <!-- FILTER -->
-    <div class="controls">
-      <div class="filter">
-        <label for="filterJenis">Tampilkan:</label>
-        <select id="filterJenis">
-          <option value="all">Semua</option>
-          <option value="pemasukan">Pemasukan</option>
-          <option value="pengeluaran">Pengeluaran</option>
-        </select>
-      </div>
-
-      <div class="bulan-control">
-        <input type="month" id="bulanTahun" />
-        <button id="lihatBulanan" class="btn-secondary">Lihat Bulanan</button>
-        <button id="exportCSV" class="btn-secondary">Ekspor CSV (All)</button>
-      </div>
-    </div>
-
-    <!-- REKAP HARIAN -->
-    <h2>Rekap Harian</h2>
-    <table id="tabelHarian">
-      <thead>
-        <tr>
-          <th>Tanggal</th>
-          <th>Jenis</th>
-          <th>Nominal (Rp)</th>
-          <th>Keterangan</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="rekap-box" id="rekapHarian"></div>
-
-    <!-- REKAP BULANAN -->
-    <h2>Rekap Bulanan</h2>
-    <table id="tabelBulanan">
-      <thead>
-        <tr>
-          <th>Tanggal</th>
-          <th>Jenis</th>
-          <th>Nominal (Rp)</th>
-          <th>Keterangan</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="rekap-box" id="rekapBulanan"></div>
-
-    <!-- CHART -->
-    <h2>Grafik Bulanan</h2>
-    <canvas id="chartBulanan" height="120"></canvas>
+  <div id="totalSaldo" class="saldo-box saldo-positif">
+    Saldo Saat Ini: Rp0
   </div>
 
-  <script type="module" src="app.js"></script>
+  <!-- FORM -->
+  <form id="formPengeluaran" class="form-row">
+    <input type="date" id="tanggal" required>
+    <select id="jenis">
+      <option value="pemasukan">Pemasukan</option>
+      <option value="pengeluaran">Pengeluaran</option>
+    </select>
+    <input type="text" id="nominal" placeholder="Nominal (Rp)" required>
+    <input type="text" id="keterangan" placeholder="Keterangan">
+    <button type="submit" class="btn-primary">Tambah</button>
+  </form>
+
+  <!-- FILTER -->
+  <div class="controls">
+    <select id="filterJenis">
+      <option value="all">Semua</option>
+      <option value="pemasukan">Pemasukan</option>
+      <option value="pengeluaran">Pengeluaran</option>
+    </select>
+
+    <input type="month" id="bulanTahun">
+    <button id="lihatBulanan" class="btn-secondary">Lihat Bulanan</button>
+  </div>
+
+  <!-- TABEL -->
+  <h2>Riwayat Transaksi</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Jenis</th>
+        <th>Nominal</th>
+        <th>Keterangan</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelData"></tbody>
+  </table>
+
+  <div id="rekap" class="rekap-box"></div>
+
+  <h2>Grafik Bulanan</h2>
+  <div style="height:260px">
+    <canvas id="chartBulanan"></canvas>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
