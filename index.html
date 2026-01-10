@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catatan Keuangan</title>
-
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -13,24 +12,31 @@
 <div class="container">
   <h1>Catatan Keuangan</h1>
 
-  <div id="totalSaldo" class="saldo-box">Saldo: Rp0</div>
+  <div id="totalSaldo" class="saldo-box saldo-positif">
+    Saldo Saat Ini: Rp0
+  </div>
 
-  <!-- FORM -->
-  <form id="form">
+  <!-- FORM INPUT -->
+  <form id="formPengeluaran" class="form-row">
     <input type="date" id="tanggal" required>
     <select id="jenis">
       <option value="pemasukan">Pemasukan</option>
       <option value="pengeluaran">Pengeluaran</option>
     </select>
-    <input type="number" id="nominal" placeholder="Nominal" required>
+    <input type="text" id="nominal" placeholder="Nominal (Rp)" required>
     <input type="text" id="keterangan" placeholder="Keterangan">
-    <button type="submit">Tambah</button>
+    <button type="submit" class="btn-primary">Tambah</button>
   </form>
 
   <!-- FILTER -->
-  <div class="filter">
-    <input type="month" id="filterBulan">
+  <div class="controls">
+    <input type="month" id="bulanTahun">
+    <button id="lihatBulanan" class="btn-secondary">Tampilkan</button>
   </div>
+
+  <!-- REKAP -->
+  <div id="rekapHarian" class="rekap-box"></div>
+  <div id="rekapBulanan" class="rekap-box"></div>
 
   <!-- RIWAYAT -->
   <h2>Riwayat Transaksi</h2>
@@ -44,11 +50,13 @@
         <th>Aksi</th>
       </tr>
     </thead>
-    <tbody id="tabel"></tbody>
+    <tbody id="tabelData"></tbody>
   </table>
 
   <h2>Grafik Bulanan</h2>
-  <canvas id="chart"></canvas>
+  <div style="height:260px">
+    <canvas id="chartBulanan"></canvas>
+  </div>
 </div>
 
 <script type="module" src="app.js"></script>
