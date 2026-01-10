@@ -4,10 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catatan Keuangan</title>
-
   <link rel="stylesheet" href="style.css">
-
-  <!-- Chart.js v4 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -19,7 +16,7 @@
     Saldo Saat Ini: Rp0
   </div>
 
-  <!-- FORM -->
+  <!-- FORM INPUT -->
   <form id="formPengeluaran" class="form-row">
     <input type="date" id="tanggal" required>
     <select id="jenis">
@@ -33,17 +30,15 @@
 
   <!-- FILTER -->
   <div class="controls">
-    <select id="filterJenis">
-      <option value="all">Semua</option>
-      <option value="pemasukan">Pemasukan</option>
-      <option value="pengeluaran">Pengeluaran</option>
-    </select>
-
     <input type="month" id="bulanTahun">
-    <button id="lihatBulanan" class="btn-secondary">Lihat Bulanan</button>
+    <button id="lihatBulanan" class="btn-secondary">Tampilkan</button>
   </div>
 
-  <!-- TABEL -->
+  <!-- REKAP -->
+  <div id="rekapHarian" class="rekap-box"></div>
+  <div id="rekapBulanan" class="rekap-box"></div>
+
+  <!-- RIWAYAT -->
   <h2>Riwayat Transaksi</h2>
   <table>
     <thead>
@@ -57,8 +52,6 @@
     </thead>
     <tbody id="tabelData"></tbody>
   </table>
-
-  <div id="rekap" class="rekap-box"></div>
 
   <h2>Grafik Bulanan</h2>
   <div style="height:260px">
