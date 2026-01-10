@@ -1,7 +1,5 @@
-// Firebase CDN (WAJIB module)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-analytics.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDSypYYx52DMrDHiUvejCVGjWElDIZmCgk",
@@ -14,6 +12,4 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 export const db = getFirestore(app);
-getAnalytics(app); // optional
